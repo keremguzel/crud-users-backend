@@ -1,13 +1,22 @@
 package com.example.kerem.error;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonView;
+
 import java.util.Date;
 import java.util.Map;
 
+@JsonInclude(JsonInclude.Include.NON_NULL) //Api error objesi cagirildiginda sadece null olmayan degerleri gosterir
 public class ApiError {
+
     private int status;
+
     private String message;
+
     private String path;
+
     private long timestamp = new Date().getTime();
+
     private Map<String,String> validationErrors;
 
     public ApiError(int status,String message, String path) {

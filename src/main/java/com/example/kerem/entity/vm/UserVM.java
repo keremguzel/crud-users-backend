@@ -1,46 +1,12 @@
-package com.example.kerem.entity;
+package com.example.kerem.entity.vm;
 
+import com.example.kerem.entity.User;
 
-import javax.persistence.*;
-
-@Entity
-@Table(name="users_mng")
-public class User {
-
-    public User() {
-
-    }
-
-    public User(String userName, String userSurname, String userEmail, String userGender) {
-        this.userName = userName;
-        this.userSurname = userSurname;
-        this.userEmail = userEmail;
-        this.userGender = userGender;
-    }
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long userId;
-
-    @Column(name = "user_name")
+public class UserVM {
     private String userName;
-
-    @Column(name = "user_surname")
     private String userSurname;
-
-    @Column(name = "user_email")
     private String userEmail;
-
-    @Column(name = "gender")
     private String userGender;
-
-    public long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(long userId) {
-        this.userId = userId;
-    }
 
     public String getUserName() {
         return userName;
@@ -72,5 +38,12 @@ public class User {
 
     public void setUserGender(String userGender) {
         this.userGender = userGender;
+    }
+
+    public UserVM(User user) {
+        this.setUserName(user.getUserName());
+        this.setUserSurname(user.getUserSurname());
+        this.setUserEmail(user.getUserEmail());
+        this.setUserGender(user.getUserGender());
     }
 }

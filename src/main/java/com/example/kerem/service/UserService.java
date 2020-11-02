@@ -1,12 +1,17 @@
 package com.example.kerem.service;
 
 import com.example.kerem.entity.User;
+import com.example.kerem.error.ApiError;
 import com.example.kerem.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @Service
 public class UserService {
@@ -14,8 +19,8 @@ public class UserService {
     @Autowired
     UserRepository userRepository;
 
-    public List<User> getUsers(){
-        return userRepository.findAll();
+    public Page<User> getUsers(Pageable page){
+        return userRepository.findAll(page);
     }
 
     public User getUserById(Long id){

@@ -1,11 +1,14 @@
 package com.example.kerem.controller;
 
 import com.example.kerem.entity.User;
+import com.example.kerem.entity.vm.UserVM;
 import com.example.kerem.error.ApiError;
 import com.example.kerem.repository.UserRepository;
 import com.example.kerem.service.UserService;
 import com.example.kerem.shared.GenericResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +18,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/1.0/")
 public class UserController {
@@ -24,8 +26,8 @@ public class UserController {
     UserService userService;
 
     @GetMapping("/users")
-    public List<User> getUsers(){
-        return userService.getUsers();
+    public Page<UserVM> getUsers(Pageable page){
+        return userService.getUsers(page).map(UserVM::new);
     }
 
     @PostMapping("/users")
@@ -33,6 +35,7 @@ public class UserController {
         String userName = user.getUserName();
         String userSurname = user.getUserSurname();
         String userEmail = user.getUserEmail();
+        String userGender = user.getUserGender();
 
         ApiError error = new ApiError(400,"valdiation error","/api/1.0/users");
         Map<String,String> validationErrors = new HashMap<>();
@@ -50,6 +53,15 @@ public class UserController {
         if(userEmail == null || userEmail.isEmpty()){
             validationErrors.put("useremail","Can not be null");
             error.setValidationErrors(validationErrors);
+
+        }
+
+        if(userGender == null || userGender.isEmpty() || userGender == ""){
+            validationErrors.put("gender","Can not be null");
+            error.setValidationErrors(validationErrors);
+        }
+
+        if(validationErrors.size() > 0){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
         }
 
@@ -78,10 +90,7 @@ public class UserController {
 
     @DeleteMapping("/users/{id}")
     public GenericResponse deleteUser(@PathVariable Long id){
-        User user = userService.getUserById(id);
-
         userService.deleteUser(id);
-
         return new GenericResponse("user deleted");
     }
 
